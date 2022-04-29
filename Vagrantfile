@@ -8,7 +8,7 @@ Vagrant.configure(2) do |config|
   $opnsense_release = '22.1'
 
   # IP address of the firewall in the host-only network
-  $virtual_machine_ip = '192.168.1.1'
+  $virtual_machine_ip = '10.0.0.2'
 
   # Configure folder sharing
   $vagrant_mount_path = '/var/vagrant'
@@ -32,7 +32,7 @@ Vagrant.configure(2) do |config|
   # Customize build VB settings
   config.vm.provider 'virtualbox' do |vb|
     vb.memory = 4096
-    vb.cpus = 1
+    vb.cpus = 4
   end
 
   # Transfer config file snippets into VM
