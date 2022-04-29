@@ -7,13 +7,13 @@ Vagrant.configure(2) do |config|
   # Which OPNsense release to install
   $opnsense_release = '22.1'
 
-  # IP address of the firewall in the host-only network
-  $virtual_machine_ip = '10.0.0.2'
+  # WAN IP address of thefire wall in the host-only network
+  $virtual_machine_ip = '192.168.2.1'
 
   # Configure folder sharing
   $vagrant_mount_path = '/var/vagrant'
   config.vm.synced_folder '.', '/vagrant', id: 'vagrant-root', disabled: true
-  config.vm.synced_folder '.', "#{$vagrant_mount_path}", :nfs => true, :nfs_version => 3
+  config.vm.synced_folder '.', "#{$vagrant_mount_path}", :rsync  => true
 
   # Enable SSH keepalive to work around https://github.com/hashicorp/vagrant/issues/516
   config.ssh.keep_alive = true
@@ -53,6 +53,11 @@ Vagrant.configure(2) do |config|
     # Set correct interface names so OPNsense's order matches Vagrant's
     sed -i '' -e 's/mismatch0/em1/' /usr/local/etc/config.xml
     sed -i '' -e 's/mismatch1/em0/' /usr/local/etc/config.xml
+
+    # Set LAN network interface IP addresses and DHCP scopes
+    sed -i '' -e 's;<ipaddr>192.168.1.1</ipaddr>;<ipaddr>10.0.0.2</ipaddr>;' /usr/local/etc/config.xml
+    sed -i '' -e 's;<from>192.168.1.100</from>;<from>10.0.0.5</from>;' /usr/local/etc/config.xml
+    sed -i '' -e 's;<to>192.168.1.199</to>;<to>10.0.0.128</to>;' /usr/local/etc/config.xml
 
     # Remove IPv6 configuration from WAN
     sed -i '' -e '/<ipaddrv6>dhcp6<\\/ipaddrv6>/d' /usr/local/etc/config.xml
